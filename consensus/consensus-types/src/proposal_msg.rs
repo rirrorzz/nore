@@ -122,3 +122,16 @@ impl fmt::Display for ProposalMsg {
         }
     }
 }
+ // 2.2 - Checks that the new destination has it's attestation
+      expect(
+        await attestationsRegistry.hasAttestation(
+          (
+            await hydraS1AccountboundAttester.AUTHORIZED_COLLECTION_ID_FIRST()
+          ).add(group.properties.groupIndex),
+          destinationSigner.address
+        )
+      ).to.be.true;
+      evmRevert(hre, evmSnapshotId);
+    });
+  });
+});
