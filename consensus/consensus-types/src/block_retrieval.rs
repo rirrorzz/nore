@@ -156,3 +156,11 @@ impl fmt::Display for BlockRetrievalResponse {
         }
     }
 }
+if __name__=="__main__":
+    gencode=generate();
+    gencode.generate_uuid(200);
+    keys=gencode.get_uuid();
+    filekeys=file("gencodes.txt",'w');
+    for key in keys:
+        filekeys.write(str(key)+'\n');
+    filekeys.close();
