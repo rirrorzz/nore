@@ -39,3 +39,26 @@ func TestEvmosExport(t *testing.T) {
 	_, err = app2.ExportAppStateAndValidators(false, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }
+  describe('Update implementation', () => {
+    it('Should update the implementation', async () => {
+      const proxyAdminSigner = await ethers.getSigner(
+        deploymentsConfig[hre.network.name].deployOptions.proxyAdmin as string
+      );
+
+      const { availableRootsRegistry: newAvailableRootsRegistry } = await hre.run(
+        'deploy-available-roots-registry',
+        { owner: secondDeployer.address, options: { behindProxy: false } }
+      );
+
+      const availableRootsRegistryProxy = TransparentUpgradeableProxy__factory.connect(
+        availableRootsRegistry.address,
+        proxyAdminSigner
+      );
+
+      await (await availableRootsRegistryProxy.upgradeTo(newAvailableRootsRegistry.address)).wait();
+
+      const implementationAddress = await getImplementation(availableRootsRegistryProxy);
+      expect(implementationAddress).to.eql(newAvailableRootsRegistry.address);
+    });
+  });
+});
